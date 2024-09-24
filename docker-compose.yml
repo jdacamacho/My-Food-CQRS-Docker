@@ -1,0 +1,28 @@
+version: '3' 
+
+services:
+  myfood_cqrs-main:
+    build: myfood_cqrs-main
+    ports:
+      - "4000:4000"
+    environment:
+      DB_URL: jdbc:mysql://my_food_database:3306/my-food?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: root
+      DB_PASSWORD: Julian2k191002perla
+    restart: always
+    depends_on:
+      my_food_database:
+        condition: service_healthy 
+  my_food_database:
+    image: mysql:8.0.33
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Julian2k191002perla
+      MYSQL_PASSWORD: Julian2k191002perla
+      MYSQL_DATABASE: my_food_database
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
